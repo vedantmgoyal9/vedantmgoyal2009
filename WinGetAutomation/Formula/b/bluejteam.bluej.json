@@ -1,0 +1,29 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "BlueJTeam.BlueJ",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "http://www.bluej.org/version.info",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = ($Response | Select-String -Pattern $VersionRegex).Matches.Value",
+  "Update": {
+    "PackageVersion": "$Response",
+    "InstallerUrls": "\"https://www.bluej.org/download/files/BlueJ-windows-$($Response.Replace('.','')).msi\""
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "[0-9.]+",
+    "InstallerRegex": ".msi$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
