@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "OpenWhisperSystems.Signal",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.github.com/repos/signalapp/Signal-Desktop/releases",
+      "Method": "Get",
+      "Headers": {
+        "Authorization": "\"Bearer $env:GITHUB_BOT_TOKEN\"",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response | Where-Object { $_.prerelease -eq $PreRelease } | Select-Object -First 1",
+    "$UpdateCondition = $Response.id -gt $PreviousReleaseId"
+  ],
+  "Update": {
+    "PackageVersion": "$Response.tag_name.TrimStart('v')",
+    "InstallerUrls": "\"https://updates.signal.org/desktop/signal-desktop-win-$($Response.tag_name.TrimStart('v')).exe\""
+  },
+  "AdditionalInfo": {
+    "PreRelease": false,
+    "PreviousReleaseId": 0,
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
