@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "DigitalScholar.Zotero",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.zotero.org/download/client/update/0/0/WINNT_x86/en-US/release/update.xml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.updates.update.version",
+  "Update": {
+    "PackageVersion": "$Response",
+    "InstallerUrls": "\"https://www.zotero.org/download/client/dl?channel=release&platform=win32&version=$($Response)\"",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotesUrl": "'https://www.zotero.org/support/changelog'"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "[0-9.]+",
+    "InstallerRegex": ".(exe|msi|msix|appx)(bundle){0,1}$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
