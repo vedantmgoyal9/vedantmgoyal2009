@@ -1,0 +1,33 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "JetBrains.Rider",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://data.services.jetbrains.com/products/releases?latest=true&type=release&code=RD",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.RD",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "($Response.downloads.windows.link -replace \"https://download.jetbrains.com\",\"https://download-cdn.jetbrains.com\")",
+    "ReleaseDate": "$Response.date",
+    "AppsAndFeaturesEntries": {
+      "DisplayName": "'JetBrains Rider ' + $Response.version",
+      "DisplayVersion": "$Response.build",
+      "ProductCode": "'JetBrains Rider ' + $Response.version"
+    }
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
