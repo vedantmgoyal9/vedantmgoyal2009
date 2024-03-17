@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.ArtHub",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "http://dldir1.qq.com/arthub/desktop/versions/latest-win32.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "\"https://dldir1.qq.com/arthub/desktop/versions/$($Response.path)\"",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "([System.IO.StreamReader]::new((Invoke-WebRequest -Uri $ReleaseNotesSource.Replace('#version', $Response.version)).RawContentStream).ReadToEnd() | ConvertFrom-Json).features -replace '^','- ' -join \"`n\""
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ReleaseNotesSource": "https://dldir1.qq.com/arthub/desktop/versions/version-summary-#version-win32.txt",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
