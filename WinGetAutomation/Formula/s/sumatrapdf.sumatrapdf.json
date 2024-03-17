@@ -1,0 +1,34 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "SumatraPDF.SumatraPDF",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.github.com/repos/sumatrapdfreader/sumatrapdf/releases?per_page=1",
+      "Method": "Get",
+      "Headers": {
+        "Authorization": "\"Bearer $env:GITHUB_BOT_TOKEN\"",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$UpdateCondition = $Response.prerelease -eq $PreRelease",
+  "Update": {
+    "PackageVersion": "$Response.tag_name.Trim('rel')",
+    "InstallerUrls": "@($x64_Uri.Replace('#version', $Response.tag_name.Trim('rel')), $x86_Uri.Replace('#version', $Response.tag_name.Trim('rel')))",
+    "ReleaseDate": "(Get-Date -Date $Response.published_at).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://www.sumatrapdfreader.org/dl/rel/#version/SumatraPDF-#version-64-install.exe",
+    "x86_Uri": "https://www.sumatrapdfreader.org/dl/rel/#version/SumatraPDF-#version-install.exe",
+    "PreRelease": false,
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
