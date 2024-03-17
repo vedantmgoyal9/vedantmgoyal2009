@@ -1,0 +1,36 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "TechSmith.Camtasia",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.techsmith.com/api/v/1/products/getallversions/11",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    },
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "\"https://www.techsmith.com/api/v/1/products/getversioninfo/$(($Response | Select-Object -First 1).VersionID)\"",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response2 = $Response2.PrimaryDownloadInformation",
+  "Update": {
+    "InstallerUrls": "\"https://download.techsmith.com$($Response2.RelativePath)camtasia.exe\"",
+    "PackageVersion": "(.\\winget-pkgs-automation.exe gii --json \"$($Update.InstallerUrls)\" | ConvertFrom-Json).PackageVersion",
+    "ReleaseDate": "(Get-Date -Date $Response2.Release).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
