@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "VMware.WorkstationPlayer",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://customerconnect.vmware.com/channel/public/api/v1.0/products/getDLGHeader?downloadGroup=WKST-PLAYER-1621&productId=1039",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.versions | Select-Object -First 1",
+  "Update": {
+    "PackageVersion": "$Response.name",
+    "InstallerUrls": "\"$InstallerUrlPrefix/$((Invoke-RestMethod -Uri $DownloadGroupApi.Replace('ver_id', $Response.id)).downloadFiles[0].fileName)\"",
+    "ReleaseDate": "(Invoke-RestMethod -Uri $DownloadGroupApi.Replace('ver_id', $Response.id)).downloadFiles[0].releaseDate"
+  },
+  "AdditionalInfo": {
+    "InstallerUrlPrefix": "https://download3.vmware.com/software/player/file",
+    "DownloadGroupApi": "https://customerconnect.vmware.com/channel/public/api/v1.0/dlg/details?downloadGroup=ver_id",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
