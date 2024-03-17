@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.TencentMeeting",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://meeting.tencent.com/web-service/query-app-update-info/?os=Windows&sdk_id=0300000000&from=2&app_publish_channel=TencentInside&appver=#PKG_PREVIOUS_VER",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.target",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.url",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.'features-description' -join \"`n\""
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "KeptForReference": "API no longer gives ReleaseDate",
+    "ReleaseDate": "(Get-Date -Date $Response.'sub-date').ToString('yyyy-MM-dd')",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
