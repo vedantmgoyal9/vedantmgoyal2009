@@ -1,0 +1,32 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Microsoft.Teams",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://teams.microsoft.com/desktopclient/installer/windows/x64?ring=general",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response2 = Invoke-RestMethod -Uri $x86_Uri",
+    "$Response3 = Invoke-RestMethod -Uri $Arm64_Uri"
+  ],
+  "Update": {
+    "PackageVersion": "($Response | Select-String -Pattern '([0-9.]){3,}').Matches.Value",
+    "InstallerUrls": "@($Response, $Response2, $Response3, $Response.Replace('exe','msi'), $Response2.Replace('exe','msi'), $Response3.Replace('exe','msi'))"
+  },
+  "AdditionalInfo": {
+    "x86_Uri": "https://teams.microsoft.com/desktopclient/installer/windows/x32?ring=general",
+    "Arm64_Uri": "https://teams.microsoft.com/desktopclient/installer/windows/arm64?ring=general",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
