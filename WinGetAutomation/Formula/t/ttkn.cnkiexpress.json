@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "TTKN.CNKIExpress",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://download.cnki.net/cnkiexpress/latest.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = [System.Text.Encoding]::UTF8.GetString($Response.RawContentStream.ToArray()) | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "\"https://download.cnki.net/cnkiexpress/$([System.Uri]::EscapeUriString($Response.path))\"",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
