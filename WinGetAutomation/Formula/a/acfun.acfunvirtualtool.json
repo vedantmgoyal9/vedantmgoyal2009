@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "AcFun.AcFunVirtualTool",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.kuaishouzt.com/rest/zt/appsupport/checkupgrade?appver=1.16.0.598&kpn=ACFUN_APP.LIVE.PC&kpf=WINDOWS_PC",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.releaseInfo",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.downloadUrl",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.message"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "[0-9.]+",
+    "InstallerRegex": ".exe$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
