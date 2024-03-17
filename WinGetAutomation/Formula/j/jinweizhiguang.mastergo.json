@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "JinweiZhiguang.MasterGo",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://static-nc.mastergo.com/plugins/desktop/windows/latest.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$InstUri.Replace('#path', $Response.path)",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotesUrl": "'https://mastergo.com/updateRecord'"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "InstUri": "https://static.mastergo.com/plugins/desktop/windows/#path",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
