@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Grammarly.Grammarly",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://update-windows.grammarly.com/update",
+      "Method": "Post",
+      "Headers": {},
+      "Body": "{\"currentVersion\": \"0.0.0.0\"}",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.download",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
