@@ -1,0 +1,34 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "OpenJS.NodeJS.Nightly",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://nodejs.org/download/nightly/index.json",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response[0]",
+    "$UpdateCondition = $Response.version -ne $PreviousVersionRaw"
+  ],
+  "Update": {
+    "PackageVersion": "$Response.version.TrimStart('v') -replace '-nightly.*', $Null",
+    "InstallerUrls": "@($x64_Uri.Replace('#raw_version', $Response.version), $x86_Uri.Replace('#raw_version', $Response.version))",
+    "ReleaseDate": "$Response.date"
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://nodejs.org/download/nightly/#raw_version/node-#raw_version-x64.msi",
+    "x86_Uri": "https://nodejs.org/download/nightly/#raw_version/node-#raw_version-x86.msi",
+    "PreviousVersionRaw": "v20.0.0-nightly2022112858b60c1393",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "$Formula.AdditionalInfo.PreviousVersionRaw = $Response.version",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
