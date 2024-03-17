@@ -1,0 +1,33 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Mobatek.MobaXterm",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://mobaxterm.mobatek.net/download-home-edition.html",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response.Links.href.Where({ $_ -match $InstallerRegex }) | Sort-Object | Select-Object -Last 1",
+    "Invoke-WebRequest -Uri $Response -OutFile Mobatek.MobaXterm.zip",
+    "Expand-Archive -Path Mobatek.MobaXterm.zip -DestinationPath Mobatek.MobaXterm",
+    "$FileName = Get-ChildItem -Path Mobatek.MobaXterm -Filter *.msi | Select-Object -ExpandProperty FullName",
+    "Remove-Item -Path Mobatek.MobaXterm.zip -Force"
+  ],
+  "Update": {
+    "PackageVersion": "(Get-AppLockerFileInformation $FileName).Publisher.BinaryVersion.ToString()",
+    "InstallerUrls": "$Response"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "Remove-Item -Path Mobatek.MobaXterm -Force -Recurse",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
