@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Hashicorp.Vagrant",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.github.com/repos/hashicorp/vagrant/tags?per_page=1",
+      "Method": "Get",
+      "Headers": {
+        "Authorization": "\"Bearer $env:GITHUB_BOT_TOKEN\"",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.name.TrimStart('v')",
+  "Update": {
+    "PackageVersion": "$Response",
+    "InstallerUrls": "@(\"https://releases.hashicorp.com/vagrant/$($Response)/vagrant_$($Response)_x86_64.msi\", \"https://releases.hashicorp.com/vagrant/$($Response)/vagrant_$($Response)_i686.msi\")"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
