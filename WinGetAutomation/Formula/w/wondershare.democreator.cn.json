@@ -1,0 +1,38 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Wondershare.DemoCreator.CN",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://pc-api.wondershare.cc/v2/product/check-upgrade?pid=13164&client_sign=%7B%7D&version=5.2.0.0&platform=win_x64",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$InstUri.Replace('#version', $Response.version)",
+    "AppsAndFeaturesEntries": {
+      "DisplayName": "'万兴录演(Build ' + $Response.version + ')'",
+      "ProductCode": "万兴录演_is1"
+    },
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.whats_new_content"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "InstUri": "https://cc-download.wondershare.cc/cbs_down/democreator_#version_full13164.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
