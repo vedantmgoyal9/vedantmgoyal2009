@@ -1,0 +1,34 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Iterate.MountainDuck",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://version.mountainduck.io/windows/changelog.rss",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "$Response.enclosure.shortVersionString + '.' + $Response.enclosure.version",
+    "InstallerUrls": "@($Response.enclosure.url, $Response.enclosure.url.Replace('exe','msi'))",
+    "ReleaseDate": "[System.DateTime]::ParseExact($Response.pubDate.Substring(0,10), 'dd/MM/yyyy', $Null).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotesUrl": "$Response.releaseNotesLink"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
