@@ -1,0 +1,39 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Unity.Unity.2022",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://live-platform-api.prd.ld.unity3d.com/graphql",
+      "Method": "Post",
+      "Headers": {
+        "Content-Type": "application/json"
+      },
+      "Body": "{\"variables\":{\"version\":\"2022\"},\"query\":\"query GetUnityReleases($version: String) {getUnityReleases(limit: 1 stream: [TECH, LTS] platform: WINDOWS architecture: X86_64 version: $version) {edges {node {version releaseDate releaseNotes{url} downloads {... on UnityReleaseHubDownload {url}}}}}}\",\"operationName\":\"GetUnityReleases\"}",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data.getUnityReleases.edges[0].node",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.downloads.url",
+    "ProductCode": "'Unity ' + $Response.version",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "(& ($ParseReleaseNotes | Invoke-Expression) (Invoke-RestMethod $Response.releaseNotes.url)) -replace '\\x1b\\[[0-9;]*m' -replace '^\\s+'"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "RegexInReleaseNotes": "To remove Markdown escape regexes (ANSI/VT100), additional regexes has been added in ReleaseNotes field",
+    "ReferenceNote": "Release Notes expression by @SpecterShell, https://github.com/vedantmgoyal2009/vedantmgoyal2009/issues/868",
+    "ParseReleaseNotes": "{ Param ($String) return ((Show-Markdown -InputObject $String) -creplace '�\\[(?:.*?)m(.+?)�\\[0m', '$1').Split(\"Release Notes\")[1].Split(\"Packages updated\")[0].Split(\"Package changes\")[0].Split(\"System Requirements\")[0].Trim() -creplace '(?m)^(\\w.+)\\n\\n-', \"`$1`n-\" }",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
