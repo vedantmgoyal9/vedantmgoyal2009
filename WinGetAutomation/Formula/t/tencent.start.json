@@ -1,0 +1,27 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.START",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.start.qq.com/cfg/get?biztypes=windows-update-info-start",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.configs.'windows-update-info-start'.value | ConvertFrom-Json",
+  "Update": {
+    "PackageVersion": "$Response.latestversion",
+    "InstallerUrls": "$Response.downloadurl"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
