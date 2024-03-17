@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Wondershare.Repairit.CN",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "http://platform.wondershare.com/rest/v2/downloader/runtime/?product_id=11009&wae=3.0.3",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.wsrp.downloader.runtime.version.'#cdata-section'",
+  "Update": {
+    "InstallerUrls": "$InstUri.Replace('#version', $Response)",
+    "PackageVersion": "(.\\winget-pkgs-automation.exe gii --json \"$($Update.InstallerUrls)\" | ConvertFrom-Json).PackageVersion"
+  },
+  "AdditionalInfo": {
+    "InstUri": "https://cc-download.wondershare.cc/cbs_down/repairit_#version_full11009.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
