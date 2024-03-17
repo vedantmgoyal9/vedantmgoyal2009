@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Mythicsoft.AgentRansack",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://www.mythicsoft.com/agentransack/download",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = 'https:' + $Response.Links.href.Where({ $_ -match $InstallerRegex }, 'First')",
+    "Invoke-WebRequest -Uri $Response -OutFile Mythicsoft.AgentRansack.exe"
+  ],
+  "Update": {
+    "PackageVersion": "$((Get-Item .\\Mythicsoft.AgentRansack.exe).VersionInfo.FileVersion)",
+    "InstallerUrls": "$Response"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "Remove-Item .\\Mythicsoft.AgentRansack.exe -Force",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
