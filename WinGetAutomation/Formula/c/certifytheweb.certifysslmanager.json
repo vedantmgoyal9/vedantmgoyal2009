@@ -1,0 +1,29 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "CertifyTheWeb.CertifySSLManager",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://certifytheweb.com/home/download",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "InstallerUrls": "($Response.Links | Where-Object { $_.href -match 'CertifyTheWebSetup' }).href",
+    "PackageVersion": "($Update.InstallerUrls | Select-String -Pattern $VersionRegex).Matches.Value"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "(?<=V)[0-9.]+(?=\\.)",
+    "InstallerRegex": ".exe$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
