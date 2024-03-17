@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "ImageMagick.ImageMagick",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://imagemagick.org/archive/binaries/digest.rdf",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.RDF.Content.about",
+  "Update": {
+    "InstallerUrls": "($Response.Where({ $_ -match 'ImageMagick-[0-9.-]+-Q16-HDRI-(x64|x86|arm64)-dll.exe$' }) | Sort-Object -Descending | Select-Object -First 3).ForEach({ $InstUriPrefix + $_ })",
+    "PackageVersion": "($Update.InstallerUrls[0] | Select-String -Pattern '(?<=-)[0-9.-]+(?=-)').Matches.Value.Replace('-','.')"
+  },
+  "AdditionalInfo": {
+    "InstUriPrefix": "https://imagemagick.org/archive/binaries/",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
