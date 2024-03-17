@@ -1,0 +1,27 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "MasterPackager.MasterPackager",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.masterpackager.com/uploads/file_archive/version.txt",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "\"$($Response).0\"",
+    "InstallerUrls": "\"https://www.masterpackager.com/installer/masterpackager_$($Response).0.msi\""
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
