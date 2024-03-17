@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.VooVMeeting",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://voovmeeting.com/wemeet-webapi/v2/config/query-download-info",
+      "Method": "Post",
+      "Headers": {},
+      "Body": "[{\"instance\":\"windows\",\"type\":\"1410000197\"}]",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data[0]",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.url",
+    "ReleaseDate": "$Response.sub_date"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
