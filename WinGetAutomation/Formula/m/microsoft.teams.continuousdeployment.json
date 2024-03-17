@@ -1,0 +1,51 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Microsoft.Teams.ContinuousDeployment",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://www.microsoft.com/en-in/microsoft-teams/group-chat-software",
+      "Method": "Head",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Iteration = $LastBuildNumber",
+  "Update": {
+    "InstallerUrls": "1..50 | ForEach-Object { $Iteration += $Iteration.ToString() -match $BuildRegex ? 1 : 52; $Response = try { (Invoke-WebRequest -Method Head -Uri $TestUrl.Replace('#prever',$VersionPrefix).Replace('#build',$Iteration) -ErrorAction SilentlyContinue).StatusCode } catch { $_.Exception.Response.StatusCode.value__ }; if ($Response -eq 200) { $InstUrls = $Architectures | ForEach-Object { $BaseUrl + $PathsAndFilenames[$_].path + $VersionPrefix + $Iteration + $PathsAndFilenames[$_].filename }; Set-Variable -Name LastBuildNumber -Value $Iteration -Option AllScope } }; return $InstUrls",
+    "PackageVersion": "\"$($VersionPrefix)$($LastBuildNumber)\""
+  },
+  "AdditionalInfo": {
+    "LastBuildNumber": 10154,
+    "VersionPrefix": "1.5.00.",
+    "BaseUrl": "https://statics.teams.cdn.office.net/",
+    "BuildRegex": "(5[1-9]|([6-8][0-9])|9[0-8])$",
+    "TestUrl": "https://statics.teams.cdn.office.net/production-windows-x64/#prever#build/Teams_windows_x64.exe",
+    "Architectures": [
+      "x64",
+      "x86",
+      "arm64"
+    ],
+    "PathsAndFilenames": {
+      "x64": {
+        "path": "production-windows-x64/",
+        "filename": "/Teams_windows_x64.exe"
+      },
+      "x86": {
+        "path": "production-windows/",
+        "filename": "/Teams_windows.exe"
+      },
+      "arm64": {
+        "path": "production-windows-arm64/",
+        "filename": "/Teams_windows_arm64.exe"
+      }
+    },
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "$Formula.AdditionalInfo.LastBuildNumber = $LastBuildNumber",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
