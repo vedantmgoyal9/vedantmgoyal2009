@@ -1,0 +1,29 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Brave.Brave.Beta",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://updates.bravesoftware.com/service/update2",
+      "Method": "Post",
+      "Headers": {},
+      "Body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><request protocol=\"3.0\" updaterversion=\"1.3.361.133\" ismachine=\"1\" sessionid=\"{a83fa575-42a3-43cc-9534-c5db64139184}\" requestid=\"{ccfb7f34-db1b-424b-abbf-b74bcef451dc}\"><os platform=\"win\" version=\"10\" sp=\"\" arch=\"x64\" /><app appid=\"{103BD053-949B-43A8-9120-2E424887DE11}\" version=\"\" nextversion=\"\" ap=\"x86-be\" lang=\"\" brand=\"\" client=\"\"><updatecheck /></app><app appid=\"{103BD053-949B-43A8-9120-2E424887DE11}\" version=\"\" nextversion=\"\" ap=\"x64-be\" lang=\"\" brand=\"\" client=\"\"><updatecheck /></app></request>",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.response",
+  "Update": {
+    "PackageVersion": "$Response.app[0].updatecheck.manifest.version",
+    "InstallerUrls": "@(($Response.app[1].updatecheck.urls.url.codebase + $Response.app[1].updatecheck.manifest.packages.package.name), ($Response.app[0].updatecheck.urls.url.codebase + $Response.app[0].updatecheck.manifest.packages.package.name))"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "(?<=v)[0-9.]+",
+    "InstallerRegex": ".(exe|msi|msix|appx)(bundle){0,1}$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
