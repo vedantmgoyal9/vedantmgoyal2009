@@ -1,0 +1,36 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Wondershare.Mockitt.CN",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://modao.cc/api/v2/client/desktop/check_update.json?region=CN&version=1.1.0&platform=win32&arch=x64",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "@($x64InstUri.Replace('#version',$Response.version), $x86InstUri.Replace('#version',$Response.version))",
+    "ReleaseDate": "(Get-Date -Date $Response.pub_date).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.release_notes_zh"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "x64InstUri": "https://cdn.modao.cc/Mockitt-win32-x64-zh-#version.exe",
+    "x86InstUri": "https://cdn.modao.cc/Mockitt-win32-ia32-zh-#version.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
