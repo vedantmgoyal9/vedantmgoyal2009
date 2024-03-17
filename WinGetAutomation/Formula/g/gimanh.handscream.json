@@ -1,0 +1,32 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Gimanh.handscream",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.github.com/repos/Gimanh/handscream/releases?per_page=1",
+      "Method": "Get",
+      "Headers": {
+        "Authorization": "\"Bearer $env:GITHUB_BOT_TOKEN\"",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$UpdateCondition = $Response.prerelease -eq $PreRelease",
+  "Update": {
+    "PackageVersion": "$Response.tag_name.TrimStart('v')",
+    "InstallerUrls": "$Response.assets | ForEach-Object { if ($_.name -match '.(exe|msi|msix|appx)(bundle){0,1}$') { $_.browser_download_url } }",
+    "ReleaseDate": "(Get-Date -Date $Response.published_at).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "PreRelease": false,
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
