@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.QQ",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://im.qq.com/pcqq",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | Select-Object -Property Content, Links",
+  "Update": {
+    "PackageVersion": "($Response.Links.href.Where({ $_.EndsWith('.exe') }) | Select-String -Pattern '(?<=QQ)[0-9.]+(?=\\.exe)').Matches.Value",
+    "InstallerUrls": "$Response.Links.href.Where({ $_.EndsWith('.exe') })",
+    "ReleaseDate": "(Get-Date -Date (($Response.Content | Select-String -Pattern $ReleaseDateRegex).Matches.Value -replace '[^0-9]', '/').Trim('/')).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "Comment": "Chinese unicode characters taken from website for regex matching",
+    "ReleaseDateRegex": "(?<=\\>发布时间：).*(?=\\</span\\>)",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
