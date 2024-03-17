@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "PostgreSQL.pgAdmin",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.github.com/repos/pgadmin-org/pgadmin4/tags?per_page=1",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.name.Replace('REL-','').Replace('_','.')",
+  "Update": {
+    "PackageVersion": "$Response",
+    "InstallerUrls": "$InstUri.Replace('#version', $Response)",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotesUrl": "$ReleaseNotesRaw.Replace('#version', $Response).Replace('#suffix', $Response.Replace('.','_'))"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "InstUri": "https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v#version/windows/pgadmin4-#version-x64.exe",
+    "ReleaseNotesRaw": "https://www.pgadmin.org/docs/pgadmin4/#version/release_notes_#suffix.html",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
