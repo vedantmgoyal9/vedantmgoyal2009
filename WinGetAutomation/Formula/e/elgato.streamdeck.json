@@ -1,0 +1,29 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Elgato.StreamDeck",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.elgato.com/sites/default/files/downloads.json",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.'sd-win'.downloadURL",
+  "Update": {
+    "PackageVersion": "($Response | Select-String -Pattern $VersionRegex).Matches.Value",
+    "InstallerUrls": "$Response"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "(?<=_)[0-9.]+(?=\\.)",
+    "InstallerRegex": ".msi$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
