@@ -1,0 +1,39 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Ximalaya.Ximalaya",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://pc.ximalaya.com/ximalaya-pc-updater/api/v1/update/full/latest.yml",
+      "Method": "Get",
+      "Headers": {
+        "platform": "win32",
+        "version": "0.0.0",
+        "buildversion": "0",
+        "uid": ""
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "(Invoke-WebRequest -Uri \"https://pc.ximalaya.com/ximalaya-pc-updater/api/v1/update/full/$($Response.path)\" -Method Head -Headers $Headers).BaseResponse.RequestMessage.RequestUri.OriginalString",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.releaseNotes"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
