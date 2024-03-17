@@ -1,0 +1,31 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "MonkeysAudio.MonkeysAudio",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://monkeysaudio.com/x64",
+      "Method": "Head",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response.BaseResponse.RequestMessage.RequestUri.OriginalString",
+    "$RawVersion = Invoke-Expression -Command $RawVersionExpression"
+  ],
+  "Update": {
+    "PackageVersion": "$RawVersion.Substring(0,1) + '.' + $RawVersion.Substring(1)",
+    "InstallerUrls": "@($Response, $Response.Replace('_x64',''))"
+  },
+  "AdditionalInfo": {
+    "RawVersionExpression": "($Response | Select-String -Pattern $VersionRegex).Matches.Value",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
