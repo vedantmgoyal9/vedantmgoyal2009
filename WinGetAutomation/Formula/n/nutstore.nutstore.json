@@ -1,0 +1,27 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Nutstore.Nutstore",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.jianguoyun.com/static/exe/latestVersion",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": "NutstoreApp-6.2.4"
+    }
+  ],
+  "PostResponseScript": "$Response = ($Response | Where-Object { $_.OS -eq 'win-wpf-client' }).exVer",
+  "Update": {
+    "PackageVersion": "$Response",
+    "InstallerUrls": "@(\"https://pkg-cdn.jianguoyun.com/static/exe/installer/$($Response)/NutstoreWindowsWPF_Full_$($Response).exe\", \"https://pkg-cdn.jianguoyun.com/static/exe/installer/$($Response)/NutstoreWindowsWPF_Full_$($Response).exe\",\"https://pkg-cdn.jianguoyun.com/static/exe/installer/$($Response)/NutstoreWindowsWPF_Full_$($Response)_ARM64.exe\")"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
