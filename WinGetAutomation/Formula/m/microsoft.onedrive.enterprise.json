@@ -1,0 +1,27 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Microsoft.OneDrive.Enterprise",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://g.live.com/1rewlive5skydrive/OneDriveEnterpriseV2",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = ([System.XML.XMLDocument] $Response.Replace('ï»¿','')).root.update",
+  "Update": {
+    "PackageVersion": "$Response.currentversion",
+    "InstallerUrls": "@($Response.amd64binary.url, $Response.binary.url)"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
