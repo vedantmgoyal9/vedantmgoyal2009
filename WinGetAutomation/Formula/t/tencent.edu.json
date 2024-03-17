@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.EDU",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://sas.qq.com/cgi-bin/ke_download_pcClient",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.result",
+  "Update": {
+    "PackageVersion": "($Response.download_url | Select-String -Pattern '[0-9.]{2,}').Matches.Value",
+    "InstallerUrls": "$Response.download_url",
+    "ReleaseDate": "$Response.publish_time"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
