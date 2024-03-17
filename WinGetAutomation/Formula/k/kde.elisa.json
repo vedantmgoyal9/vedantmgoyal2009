@@ -1,0 +1,31 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "KDE.Elisa",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://binary-factory.kde.org/view/Windows%2064-bit/job/Elisa_Release_win64/api/json",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response.lastSuccessfulBuild",
+    "$UpdateCondition = $Response.number -gt $PreviousBuildNumber"
+  ],
+  "Update": {
+    "InstallerUrls": "\"$($Response.url)artifact/$((Invoke-RestMethod -Method Get -Uri \"$($Response.url)api/json\").artifacts.FileName -match '.exe$')\"",
+    "PackageVersion": "($Update.InstallerUrls | Select-String -Pattern '[0-9.]{5,}').Matches.Value"
+  },
+  "AdditionalInfo": {
+    "PreviousBuildNumber": 1190,
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "$Formula.AdditionalInfo.PreviousBuildNumber = $Response.number",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
