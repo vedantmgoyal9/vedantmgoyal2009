@@ -1,0 +1,33 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "hpjansson.Chafa",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.github.com/repos/hpjansson/chafa/releases?per_page=1",
+      "Method": "Get",
+      "Headers": {
+        "Authorization": "\"Bearer $env:GITHUB_BOT_TOKEN\"",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$UpdateCondition = $Response.prerelease -eq $PreRelease #default-gh",
+  "Update": {
+    "PackageVersion": "$Response.tag_name.TrimStart('v') #default-gh",
+    "InstallerUrls": "$InstUri.Replace('#version', $Update.PackageVersion)",
+    "ReleaseDate": "(Get-Date -Date $Response.published_at).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "PreRelease": false,
+    "InstUri": "https://hpjansson.org/chafa/releases/static/chafa-#version-1-x86_64-windows.zip",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
