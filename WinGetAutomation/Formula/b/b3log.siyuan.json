@@ -14,17 +14,18 @@
       "UserAgent": ""
     }
   ],
-  "PostResponseScript": "$UpdateCondition = $Response.prerelease -eq $PreRelease",
+  "PostResponseScript": [
+    "$UpdateCondition = $Response.prerelease -eq $PreRelease",
+    "$InstallerUrl = $Response.assets.Where({ $_.name -match '.exe$' }).browser_download_url"
+  ],
   "Update": {
     "PackageVersion": "$Response.tag_name.TrimStart('v')",
-    "InstallerUrls": "$Response.assets | ForEach-Object { if ($_.name -match $InstallerRegex) { $_.browser_download_url } }",
+    "InstallerUrls": "@($InstallerUrl + '|x64|machine', $InstallerUrl + '|x64|user')",
     "ReleaseDate": "(Get-Date -Date $Response.published_at).ToString('yyyy-MM-dd')"
   },
   "AdditionalInfo": {
     "PreRelease": false,
-    "ForceUpgrade": false,
-    "VersionRegex": "(?<=v)[0-9.]+",
-    "InstallerRegex": ".(exe|msi|msix|appx)(bundle){0,1}$"
+    "ForceUpgrade": false
   },
   "PostUpgradeScript": "",
   "Skip": {
