@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Wondershare.Recoverit.CN",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "http://platform.wondershare.com/rest/v2/downloader/runtime/?product_id=4516&wae=3.0.3",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.wsrp.downloader.runtime.version.'#cdata-section'",
+  "Update": {
+    "InstallerUrls": "$InstUri.Replace('#version', $Response)",
+    "PackageVersion": "(.\\winget-pkgs-automation.exe gii --json \"$($Update.InstallerUrls)\" | ConvertFrom-Json).PackageVersion"
+  },
+  "AdditionalInfo": {
+    "InstUri": "https://cc-download.wondershare.cc/cbs_down/data-recovery-64bit_#version_full4516.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
