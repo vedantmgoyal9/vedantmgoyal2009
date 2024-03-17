@@ -1,0 +1,32 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "cURL.cURL",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://curl.se/windows",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "($Response.Content | Select-String -Pattern $VersionRegex).Matches.Value #default-headrequest",
+    "InstallerUrls": "($Response.Links.href.Where({ $_ -match $InstallerRegex }) | Select-Object -Unique).ForEach({ $InstUriPrefix + $_ })",
+    "ReleaseDate": "($Response.Content | Select-String -Pattern $ReleaseDateRegex).Matches.Value"
+  },
+  "AdditionalInfo": {
+    "ReleaseDateRegex": "(?<=<b>Date<\\/b>:\\s)[\\d-]+",
+    "InstUriPrefix": "https://curl.se/windows/",
+    "ForceUpgrade": false,
+    "VersionRegex": "(?<=<b>curl version<\\/b>:\\s)[\\d.]+",
+    "InstallerRegex": "^dl.*mingw.zip$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
