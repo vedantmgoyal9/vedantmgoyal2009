@@ -1,0 +1,27 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.Foxmail",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://datacollect.foxmail.com.cn/cgi-bin/foxmailupdate?f=xml",
+      "Method": "Post",
+      "Headers": {},
+      "Body": "<CheckForUpdate><ProductName>Foxmail</ProductName><Version>0</Version><BuildNumber>0</BuildNumber><RequestType>1</RequestType></CheckForUpdate>",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.UpdateNotify",
+  "Update": {
+    "PackageVersion": "$Response.NewVersion",
+    "InstallerUrls": "$Response.PackageURL"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
