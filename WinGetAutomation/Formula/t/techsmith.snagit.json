@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "TechSmith.Snagit",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.techsmith.com/api/v/1/products/getallversions/12",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = (Invoke-RestMethod -Method Get -Uri \"https://www.techsmith.com/api/v/1/products/getversioninfo/$(($Response | Select-Object -First 1).VersionID)\").PrimaryDownloadInformation",
+  "Update": {
+    "InstallerUrls": "\"https://download.techsmith.com$($Response.RelativePath)snagit.exe\"",
+    "PackageVersion": "(.\\winget-pkgs-automation.exe gii --json \"$($Update.InstallerUrls)\" | ConvertFrom-Json).PackageVersion",
+    "ReleaseDate": "(Get-Date -Date $Response.Release).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
