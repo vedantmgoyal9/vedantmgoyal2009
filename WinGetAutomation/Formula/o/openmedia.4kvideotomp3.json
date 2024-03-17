@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "OpenMedia.4KVideoToMP3",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://dl.4kdownload.com/app/appcast/videotomp3.xml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response[0]",
+    "$Response2 = ($Response.title | Select-String -Pattern $VersionRegex).Matches.Value"
+  ],
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "@($x64_Uri.Replace('#version', $Response2), $x86_Uri.Replace('#version', $Response2), $x64_Online_Uri.Replace('#version', $Response2), $x86_Online_Uri.Replace('#version', $Response2))",
+    "ReleaseDate": "(Get-Date -Date $Response.pubDate).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://dl.4kdownload.com/app/4kvideotomp3_#version_x64.msi",
+    "x86_Uri": "https://dl.4kdownload.com/app/4kvideotomp3_#version.msi",
+    "x64_Online_Uri": "https://dl.4kdownload.com/app/4kvideotomp3_#version_x64_online.exe",
+    "x86_Online_Uri": "https://dl.4kdownload.com/app/4kvideotomp3_#version_online.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
