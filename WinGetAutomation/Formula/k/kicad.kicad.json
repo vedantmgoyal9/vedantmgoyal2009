@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "KiCad.KiCad",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://downloads.kicad.org/kicad/windows/explore/stable",
+      "Method": "Get",
+      "Headers": {
+        "Authorization": "\"Bearer $env:GITHUB_BOT_TOKEN\"",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.Links.href.Where({ $_.EndsWith('.exe') -and $_ -notmatch 'product|lite' }) | Sort-Object | Select-Object -Last 2",
+  "Update": {
+    "PackageVersion": "($Response[0] | Select-String -Pattern '(?<=-)[0-9.]+').Matches.Value",
+    "InstallerUrls": "$Response"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "$Formula.AdditionalInfo.PreviousReleaseId = $Response.id",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
