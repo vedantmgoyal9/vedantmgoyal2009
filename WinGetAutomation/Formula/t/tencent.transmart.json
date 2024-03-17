@@ -1,0 +1,36 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.TranSmart",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://transmart.qq.com/api/resourcemanageserver/findAllClientVersion",
+      "Method": "Post",
+      "Headers": {
+        "Content-Type": "application/json"
+      },
+      "Body": "{\"value\":\"TranSmart\"}",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.value.windows[0]",
+  "Update": {
+    "PackageVersion": "$Response.version -replace '\\(.*\\)', $Null",
+    "InstallerUrls": "$Response.url",
+    "ReleaseDate": "(Get-Date -Date $Response.publish_time).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.describe_content"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
