@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "OpenJS.NodeJS.LTS",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.github.com/repos/nodejs/node/releases",
+      "Method": "Get",
+      "Headers": {
+        "Authorization": "\"Bearer $env:GITHUB_BOT_TOKEN\"",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response.Where({ $_.name.Contains('LTS') }) | Select-Object -First 1",
+    "$UpdateCondition = $Response.id -gt $PreviousReleaseId"
+  ],
+  "Update": {
+    "PackageVersion": "$Response.tag_name.TrimStart('v')",
+    "InstallerUrls": "@(\"https://nodejs.org/dist/$($Response.tag_name)/node-$($Response.tag_name)-x64.msi\", \"https://nodejs.org/dist/$($Response.tag_name)/node-$($Response.tag_name)-x86.msi\")",
+    "ReleaseDate": "(Get-Date -Date $Response.published_at).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "PreviousReleaseId": 0,
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "$Formula.AdditionalInfo.PreviousReleaseId = $Response.id",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
