@@ -1,0 +1,31 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Mozilla.Thunderbird",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://product-details.mozilla.org/1.0/thunderbird_versions.json",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.LATEST_THUNDERBIRD_VERSION",
+  "Update": {
+    "PackageVersion": "$Response",
+    "InstallerUrls": "$Locales | ForEach-Object { \"https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/$($Response)/win64/$($_)/Thunderbird%20Setup%20$($Response).msi\"; \"https://download-installer.cdn.mozilla.net/pub/thunderbird/releases/$($Response)/win32/$($_)/Thunderbird%20Setup%20$($Response).msi\" }"
+  },
+  "AdditionalInfo": {
+    "Locales": [
+      "en-US",
+      "en-GB"
+    ],
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
