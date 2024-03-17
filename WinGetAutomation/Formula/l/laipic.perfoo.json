@@ -1,0 +1,27 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "LAIPIC.Perfoo",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://presentment-api.laihua.com/common/config?type=120",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data.perfooUpdatePC | ConvertFrom-Json",
+  "Update": {
+    "PackageVersion": "($Response.versionCode | Select-String -Pattern '(?<=v)[0-9.]+').Matches.Value",
+    "InstallerUrls": "$Response.downloadUrl"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
