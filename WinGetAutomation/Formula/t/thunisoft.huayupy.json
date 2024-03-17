@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Thunisoft.HuayuPY",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://pinyin.thunisoft.com/webapi/v1/setup/setupinfo?os=win",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.result",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.addr",
+    "ReleaseDate": "$Response.date"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
