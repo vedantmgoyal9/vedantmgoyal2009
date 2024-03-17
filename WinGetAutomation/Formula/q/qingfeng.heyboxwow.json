@@ -1,0 +1,33 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Qingfeng.HeyboxWow",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://accoriapi.xiaoheihe.cn/wow/check_new_version_v2",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.result",
+  "Update": {
+    "PackageVersion": "$Response.new_version",
+    "InstallerUrls": "$Response.url",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "[System.Text.RegularExpressions.Regex]::Matches($Response.change_log, '(?<=<li>).+?(?=</li>)').Value -creplace '^', '- ' -join \"`n\""
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
