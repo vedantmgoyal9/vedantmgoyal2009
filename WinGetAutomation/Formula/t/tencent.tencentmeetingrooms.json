@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.TencentMeetingRooms",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://meeting.tencent.com/web-service/query-download-info?q=%5B%7B%22package-type%22:%22rooms%22,%22channel%22:%221410000391%22,%22platform%22:%22windows%22%7D%5D&nonce=AAAAAAAAAAAAAAAA",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.'info-list'[0]",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.url",
+    "ReleaseDate": "$Response.'sub-date'"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
