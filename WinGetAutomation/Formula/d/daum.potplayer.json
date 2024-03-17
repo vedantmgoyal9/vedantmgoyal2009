@@ -1,0 +1,31 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Daum.PotPlayer",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://t1.daumcdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "($Response | Select-String -Pattern $VersionRegex).Matches.Value",
+    "InstallerUrls": "@($x64Uri.Replace('#version', $Update.PackageVersion), $x86Uri.Replace('#version', $Update.PackageVersion))"
+  },
+  "AdditionalInfo": {
+    "x64Uri": "https://t1.daumcdn.net/potplayer/PotPlayer/Version/#version/PotPlayerSetup64.exe",
+    "x86Uri": "https://t1.daumcdn.net/potplayer/PotPlayer/Version/#version/PotPlayerSetup.exe",
+    "ForceUpgrade": false,
+    "VersionRegex": "(?<=\\[)\\d+(?=\\])",
+    "InstallerRegex": ".(exe|msi|msix|appx)(bundle){0,1}$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
