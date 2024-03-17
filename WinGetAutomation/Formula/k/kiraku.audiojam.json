@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Kiraku.AudioJam",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://api.kirakuapp.com/auth/version/latest?appId=4&platform=0",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data",
+  "Update": {
+    "PackageVersion": "([System.Uri]::UnescapeDataString($Response.downloadUrl) | Select-String -Pattern '[0-9.-]{2,}(?=\\.)').Matches.Value",
+    "InstallerUrls": "$Response.downloadUrl",
+    "ReleaseDate": "[System.DateTimeOffset]::FromUnixTimeMilliseconds($Response.updateTime).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
