@@ -1,0 +1,37 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Yemiao.ZhiyunTranslator",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://free.zhiyunwenxian.cn/zy/UpdateData.txt",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = [System.Text.Encoding]::UTF8.GetString($Response.RawContentStream.ToArray())",
+  "Update": {
+    "PackageVersion": "($Response | Select-String -Pattern '[0-9.]+').Matches.Value",
+    "InstallerUrls": "(Invoke-RestMethod -Uri $SourceInstUri).Replace('ï»¿','') -replace '\\?.*', $Null",
+    "ReleaseDate": "(Get-Date -Date (($Response | Select-String -Pattern $ReleaseDateRegex).Matches.Value)).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "($Response | Select-String -Pattern $ReleaseNotesRegex -AllMatches).Matches.Value -join \"`n\""
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ReleaseNotesRegex": "[0-9]+、.*",
+    "ReleaseDateRegex": "(?<=发布日期：).*(?=。)",
+    "SourceInstUri": "https://free.zhiyunwenxian.cn/zy/UpdateURL.txt",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
