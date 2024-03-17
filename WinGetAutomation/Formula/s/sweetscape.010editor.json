@@ -1,0 +1,29 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "SweetScape.010Editor",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://www.sweetscape.com/download/010editor/",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = ($Response.Content | Select-String -Pattern $VersionRegex).Matches.Value",
+  "Update": {
+    "PackageVersion": "$Response",
+    "InstallerUrls": "@($x64_Uri.Replace('#version', $Response), $x86_Uri.Replace('#version', $Response))"
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://download.sweetscape.com/010EditorWin64Installer#version.exe",
+    "x86_Uri": "https://download.sweetscape.com/010EditorWin32Installer#version.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
