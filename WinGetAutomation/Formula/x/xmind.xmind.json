@@ -1,0 +1,33 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Xmind.Xmind",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.xmind.net/xmind/update/latest-win64.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.url",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.'releaseNotes-en-US'"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
