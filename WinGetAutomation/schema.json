@@ -128,22 +128,26 @@
           "uniqueItems": true
         },
         "AppsAndFeaturesEntries": {
-          "type": "object",
-          "properties": {
-            "DisplayName": {
-              "type": "string"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "DisplayName": {
+                "type": "string"
+              },
+              "Publisher": {
+                "type": "string"
+              },
+              "DisplayVersion": {
+                "type": "string"
+              },
+              "ProductCode": {
+                "$ref": "#/properties/ManifestFields/properties/ProductCode"
+              }
             },
-            "Publisher": {
-              "type": "string"
-            },
-            "DisplayVersion": {
-              "type": "string"
-            },
-            "ProductCode": {
-              "$ref": "#/properties/Update/properties/ProductCode"
-            }
+            "additionalProperties": false
           },
-          "additionalProperties": false
+          "uniqueItems": true
         }
       },
       "additionalProperties": false
@@ -204,3 +208,4 @@
   },
   "additionalProperties": false
 }
+feat(wa): remove winget pwsh module dependency & make arp entries array instead of object

@@ -134,13 +134,7 @@ Function Get-UpdateInfo {
     }
 
     $Formula.Update.PSObject.Properties.ForEach({
-            If ($_.Name -eq 'AppsAndFeaturesEntries') {
-                $AppsAndFeaturesEntries = New-Object -TypeName System.Management.Automation.PSObject
-                $Formula.Update.AppsAndFeaturesEntries.PSObject.Properties.ForEach({
-                        $AppsAndFeaturesEntries | Add-Member -MemberType NoteProperty -Name $_.Name -Value ($_.Value.Contains('$') ? ($_.Value | Invoke-Expression) : $_.Value)
-                    })
-                $UpdateInfo | Add-Member -MemberType NoteProperty -Name $_.Name -Value $AppsAndFeaturesEntries
-            } ElseIf ($_.Name -eq 'Locales') {
+            If ($_.Name -in @('AppsAndFeaturesEntries', 'Locales')) {
                 $_NestedObjectArray = @()
                 for ($_Index = 0; $_Index -lt $Formula.Update."$($_.Name)".Length; $_Index++) {
                     $_NestedObject = New-Object -TypeName System.Management.Automation.PSObject
