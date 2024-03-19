@@ -70,6 +70,9 @@ jobs:
           $ErrorActionPreference = 'Continue'
           $ProgressPreference = 'SilentlyContinue'
           Import-Module .\WinGetAutomation.psm1
+          # Source: https://github.com/vedantmgoyal9/vedantmgoyal9/issues/251#issuecomment-1109500197 by @SpecterShell
+          # to bypass certificate check so that https traffic can be captured of some electron apps
+          [System.Environment]::SetEnvironmentVariable('NODE_TLS_REJECT_UNAUTHORIZED', '0', [System.EnvironmentVariableTarget]::Process)
           $Updates = New-Object -TypeName System.Collections.ArrayList
           $ErrorGettingUpdates = @()
           ForEach ($FormulaPath in (Get-ChildItem -Path .\Formula\ -File -Recurse).FullName.Where({ (Get-Content -Path $_ | ConvertFrom-Json).Skip.'Skip?' -eq $false })) {
@@ -87,13 +90,14 @@ jobs:
                 Write-Output 'Update available. Adding to the list of updates...'
                 $Updates.Add($UpdateInfo)
               }
-              If ($UpdateInfo._WinGetAutomation.Skip -is [System.Management.Automation.PSCustomObject]) {
+              If ($UpdateInfo._WinGetAutomation.Skip.'Skip?' -eq $true) {
                 Write-Output 'Skipping this package...'
                 $Formula = Get-Content -Path $FormulaPath | ConvertFrom-Json
                 $Formula.Skip = $UpdateInfo._WinGetAutomation.Skip
                 $Formula | ConvertTo-Json -Depth 7 | Out-File -FilePath $FormulaPath -Encoding utf8 -Force
+                git add $FormulaPath.Replace("$PWD$([System.IO.Path]::DirectorySeparatorChar)",'').Replace('\','/')
                 git diff --stat origin/main.. --quiet # Check unpushed commits
-                If ($?) { # No unscheduleed commits, equivalent to $LASTEXITCODE -eq 0
+                If ($?) { # No unpushed commits, equivalent to $LASTEXITCODE -eq 0
                   git commit -m "chore(wa/formula): auto-skip packages [$env:GITHUB_RUN_NUMBER] [skip ci]" --signoff
                 } Else {
                   git commit -m "chore(wa/formula): auto-skip packages [$env:GITHUB_RUN_NUMBER] [skip ci]" --signoff --amend --no-edit
@@ -131,12 +135,25 @@ jobs:
               $UpdateInfo | Format-List *
               try {
                 Update-Manifest -UpdateInfo $UpdateInfo -OutVariable StdOutLog
+                If ($UpdateInfo._WinGetAutomation.PostUpgradeScript) {
+                  $Formula = Get-Content -Path $UpdateInfo._WinGetAutomation.FormulaPath | ConvertFrom-Json
+                  $UpdateInfo._WinGetAutomation.PostUpgradeScript | Invoke-Expression
+                  $Formula | ConvertTo-Json -Depth 7 | Out-File -FilePath $UpdateInfo._WinGetAutomation.FormulaPath -Encoding utf8 -Force
+                  git add $FormulaPath.Replace("$PWD$([System.IO.Path]::DirectorySeparatorChar)",'').Replace('\','/')
+                  git diff --stat origin/main.. --quiet # Check unpushed commits
+                  If ($?) { # No unpushed commits, equivalent to $LASTEXITCODE -eq 0
+                    git commit -m "chore(wa/formula): update packages [$env:GITHUB_RUN_NUMBER] [skip ci]" --signoff
+                  } Else {
+                    git commit -m "chore(wa/formula): update packages [$env:GITHUB_RUN_NUMBER] [skip ci]" --signoff --amend --no-edit
+                  }
+                }
               } catch {
                 Write-Error $_.Exception.Message
                 $ErrorUpgradingPkgs.Add("- **$($UpdateInfo.PackageIdentifier)**: $($_.Exception.Message)`n```````n$StdOutLog`n```````n")
               }
               Write-Output '::endgroup::'
             }
+            git push https://x-access-token:$env:GITHUB_BOT_TOKEN@github.com/vedantmgoyal9/vedantmgoyal9.git
             "errors=$($ErrorUpgradingPkgs.ToArray() | ConvertTo-Json -Compress)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           }
         id: update-manfiests
@@ -201,12 +218,12 @@ jobs:
           $PullRequestNo = '${{ github.event.pull_request.number }}'
           If ($ChangedFiles.Count -gt 1) {
             Write-Output 'Multiple changes detected. Commenting on the pull request...'
-            $CommentBody = @"
+            $CommentBody = @'
           Hi 👋`n
           Multiple formulae in a single pull request are not supported, as it makes reviewing changes difficult.
           Please open a separate pull request for each formula 🙏🏻🙂`n
           Thanks for contributing :-)
-          "@
+          '@
             If ((gh pr view $PullRequestNo --json comments | ConvertFrom-Json).comments.author.login -contains 'vedantmgoyal-bot') {
               gh pr comment $PullRequestNo --body $CommentBody --edit-last
             } Else {
@@ -241,7 +258,7 @@ jobs:
           <tr>
           <td>`n
           ``````ansi
-          $(wingetcreate show $UpdateInfo.PackageIdentifier | Out-String)
+          $(& $env:WINGET_AUTOMATION_WINGETCREATE show $UpdateInfo.PackageIdentifier | Out-String)
           ```````n
           </td>
           <td>`n
