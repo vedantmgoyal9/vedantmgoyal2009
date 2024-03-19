@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "JetBrains.IntelliJIDEA.Community.EAP",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://data.services.jetbrains.com/products/releases?latest=true&type=eap&code=IIC",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.IIC",
+  "Update": {
+    "PackageVersion": "$Response.build",
+    "InstallerUrls": "($Response.downloads.windows.link -replace \"https://download.jetbrains.com\",\"https://download-cdn.jetbrains.com\")",
+    "ReleaseDate": "$Response.date",
+    "ProductCode": "'IntelliJ IDEA Community Edition ' + $Response.build",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotesUrl": "$Response.notesLink"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
