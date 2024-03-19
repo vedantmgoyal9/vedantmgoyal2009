@@ -1,5 +1,5 @@
 #Requires -Version 7.2
-#Requires -Modules Microsoft.WinGet.Client, powershell-yaml
+#Requires -Modules powershell-yaml
 
 $WinGetAutomationManifestsDir = Join-Path -Path $PWD -ChildPath 'WinGetAutomation_Manifests'
 
@@ -53,33 +53,31 @@ Function Confirm-VersionAlreadyExists {
 #region Public Functions
 Function Initialize-WinGetAutomation {
     Write-Output 'Initializing WinGet Automation...'
-
-    # Install WinGet and wingetcreate
-    If ($IsWindows) {
-        Write-Output 'Installing WinGet and wingetcreate'
-        If (-not (Get-Command -Name 'winget' -CommandType Application -ErrorAction SilentlyContinue)) {
-            Write-Output 'Installing WinGet...'
-            Repair-WinGetPackageManager -Latest -AllUsers -Verbose
-        } Else {
-            Write-Output 'WinGet is already installed. Continuing...'
-        }
-        If (-not (Get-Command -Name 'wingetcreate' -CommandType Application -ErrorAction SilentlyContinue)) {
-            Write-Output 'Installing wingetcreate...'
-            Install-WinGetPackage -Id 'Microsoft.WingetCreate' -Scope User -Source 'winget' -Verbose
-        } Else {
-            Write-Output 'wingetcreate is already installed. Continuing...'
-        }
+    If (Get-Command -Name 'wingetcreate' -CommandType Application -ErrorAction SilentlyContinue) {
+        Write-Output 'wingetcreate is already installed. Continuing...'
+        New-Item -Path Env:\WINGET_AUTOMATION_WINGETCREATE -Value (Get-Command -Name 'wingetcreate' -CommandType Application).Source -Force
     } Else {
-        Write-Error "Unsupported OS: $Env:OS"; return
-        # Write-Output 'Installing wingetcreate'
-        # switch -regex ($Env:PROCESSOR_ARCHITECTURE) {
-        #     '(AMD|IA)64' { Set-Variable -Name cliArch -Value 'amd64' -Force }
-        #     'ARM64' { Set-Variable -Name cliArch -Value 'arm64' -Force }
-        #     Default { Write-Error "Unsupported architecture: $Env:PROCESSOR_ARCHITECTURE"; Exit 1 }
-        # }
-        ## ... install wingetcreate
+        Write-Output 'Downloading wingetcreate...'
+        $fileName = 'wingetcreate'
+        $fileName += $(
+            If ($IsWindows) { '' } # win
+        #     ElseIf ($IsMacOS) { 'macos' } 
+        #     ElseIf ($IsLinux) { 'linux' } 
+            Else { Write-Error "Unsupported OS: $env:OS"; Exit 1 }
+        )
+        $fileName += switch -regex ($Env:PROCESSOR_ARCHITECTURE) {
+            '(AMD|IA)64' { '' } # -amd64
+        #     'ARM64' { '-arm64' }
+            Default { Write-Error "Unsupported architecture: $Env:PROCESSOR_ARCHITECTURE"; Exit 1 }
+        }
+        If ($IsWindows) { $fileName += '.exe' }
+        $pathToDownload = Join-Path -Path $PWD -ChildPath $fileName
+        Invoke-WebRequest -Uri "https://github.com/microsoft/winget-create/releases/latest/download/$fileName" -OutFile $pathToDownload
+        Write-Output "Downloaded wingetcreate to $pathToDownload"
+        New-Item -Path Env:\WINGET_AUTOMATION_WINGETCREATE -Value $pathToDownload -Force
     }
-
+    Write-Output '$env:WINGET_AUTOMATION_WINGETCREATE has been set to the path of wingetcreate.'
+    Write-Output 'Please do NOT change or remove this environment variable. It is required for Update-Manifest function to work.'
     Write-Output 'Requirements for WinGet Automation have been installed and configured successfully.'
 }
 
@@ -199,13 +197,15 @@ Function Update-Manifest {
         [System.Management.Automation.SwitchParameter] $DryRun
     )
 
-    If (-not (Get-Command -Name 'wingetcreate' -CommandType Application -ErrorAction SilentlyContinue)) {
-        Write-Error 'wingetcreate is not installed. Please run Initialize-WinGetAutomation to install it.' -Category NotInstalled
+    If (-not $env:WINGET_AUTOMATION_WINGETCREATE) {
+        Write-Error '$env:WINGET_AUTOMATION_WINGETCREATE is not set.' -Category NotSpecified
+        Write-Output "Please run Initialize-WinGetAutomation to set it to wingetcreate's path."
+        return
     }
 
     # Checking if $env:GITHUB_TOKEN is set
     If ($null -eq $env:GITHUB_TOKEN) {
-        Write-Error 'Please set the GITHUB_TOKEN environment variable. It is required for submitting manifests by wingetcreate.' -Category NotSpecified
+        Write-Error 'Please set the $env:GITHUB_TOKEN variable. It is required for submitting manifests by wingetcreate.' -Category NotSpecified
     }
 
     If (-not $DryRun -and (Confirm-VersionAlreadyExists -PackageIdentifier $UpdateInfo.PackageIdentifier -PackageVersion $UpdateInfo.PackageVersion -CheckPRs)) {
@@ -214,7 +214,7 @@ Function Update-Manifest {
     }
 
     # Execute wingetcreate update command, non-interactive update mode
-    wingetcreate update $UpdateInfo.PackageIdentifier `
+    & $env:WINGET_AUTOMATION_WINGETCREATE update $UpdateInfo.PackageIdentifier `
         --version $UpdateInfo.PackageVersion `
         --urls $UpdateInfo.InstallerUrls `
         --out $WinGetAutomationManifestsDir `
@@ -246,7 +246,7 @@ Function Update-Manifest {
 
     If (-not $DryRun) {
         # Submit manifests after patching metadata, if any
-        wingetcreate submit (Get-ChildItem -Path $WinGetAutomationManifestsDir -Directory -Recurse | Select-Object -Last 1 -ExpandProperty FullName) --token $env:GITHUB_TOKEN
+        & $env:WINGET_AUTOMATION_WINGETCREATE submit (Get-ChildItem -Path $WinGetAutomationManifestsDir -Directory -Recurse | Select-Object -Last 1 -ExpandProperty FullName) --token $env:GITHUB_TOKEN
 
         # Remove manifests after submission
         Remove-Item -Path $WinGetAutomationManifestsDir -Recurse -Force

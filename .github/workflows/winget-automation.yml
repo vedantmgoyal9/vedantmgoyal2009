@@ -30,15 +30,7 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - run: Install-Module -Name Microsoft.WinGet.Client -Force -Scope CurrentUser -Repository PSGallery
-
-      - run: Install-Module -Name powershell-yaml -Force -Scope CurrentUser -Repository PSGallery
-
-      - run: Import-Module .\WinGetAutomation.psm1; Initialize-WinGetAutomation
-
-      - run: winget --info
-
-      - run: wingetcreate info
+      - run: Install-PSResource -Name powershell-yaml -Scope CurrentUser -Repository PSGallery -TrustRepository
 
       - if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         name: Setup git user and email 🙋‍♂️
@@ -100,7 +92,7 @@ jobs:
                 $Formula = Get-Content -Path $FormulaPath | ConvertFrom-Json
                 $Formula.Skip = $UpdateInfo._WinGetAutomation.Skip
                 $Formula | ConvertTo-Json -Depth 7 | Out-File -FilePath $FormulaPath -Encoding utf8 -Force
-                git diff --stat origin/main.. --quiet # Check unscheduleed commits
+                git diff --stat origin/main.. --quiet # Check unpushed commits
                 If ($?) { # No unscheduleed commits, equivalent to $LASTEXITCODE -eq 0
                   git commit -m "chore(wa/formula): auto-skip packages [$env:GITHUB_RUN_NUMBER] [skip ci]" --signoff
                 } Else {
@@ -125,19 +117,23 @@ jobs:
           $ErrorActionPreference = 'Continue'
           $ProgressPreference = 'SilentlyContinue'
           Import-Module .\WinGetAutomation.psm1
+          Initialize-WinGetAutomation
+          Write-Output '::group::& $env:WINGET_AUTOMATION_WINGETCREATE info'
+          & $env:WINGET_AUTOMATION_WINGETCREATE info
+          Write-Output '::endgroup::'
           $Updates = '${{ steps.check-for-updates.outputs.updates }}' | ConvertFrom-Json
           $ErrorUpgradingPkgs = New-Object -TypeName System.Collections.ArrayList
           If ($Updates.Count -eq 0) {
             Write-Output 'No updates found. Continuing...'
           } Else {
-            ForEach ($Update in $Updates) {
-              Write-Output "::group::Updating $($Update.PackageIdentifier)"
+            ForEach ($UpdateInfo in $Updates) {
+              Write-Output "::group::Updating $($UpdateInfo.PackageIdentifier)"
               $UpdateInfo | Format-List *
               try {
-                Update-Manifest -UpdateInfo $Update -OutVariable StdOutLog
+                Update-Manifest -UpdateInfo $UpdateInfo -OutVariable StdOutLog
               } catch {
                 Write-Error $_.Exception.Message
-                $ErrorUpgradingPkgs.Add("- **$($Package.Identifier)**: $($_.Exception.Message)`n```````n$StdOutLog`n```````n")
+                $ErrorUpgradingPkgs.Add("- **$($UpdateInfo.PackageIdentifier)**: $($_.Exception.Message)`n```````n$StdOutLog`n```````n")
               }
               Write-Output '::endgroup::'
             }
@@ -197,6 +193,10 @@ jobs:
           $ErrorActionPreference = 'Continue'
           $ProgressPreference = 'SilentlyContinue'
           Import-Module .\WinGetAutomation.psm1
+          Initialize-WinGetAutomation
+          Write-Output '::group::& $env:WINGET_AUTOMATION_WINGETCREATE info'
+          & $env:WINGET_AUTOMATION_WINGETCREATE info
+          Write-Output '::endgroup::'
           $ChangedFiles = '${{ steps.changed-files.outputs.all_changed_files }}' | ConvertFrom-Json
           $PullRequestNo = '${{ github.event.pull_request.number }}'
           If ($ChangedFiles.Count -gt 1) {
