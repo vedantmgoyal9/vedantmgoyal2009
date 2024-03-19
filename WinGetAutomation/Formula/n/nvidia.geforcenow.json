@@ -1,0 +1,31 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Nvidia.GeForceNow",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://ota.nvidia.com/release/available?product=GFN-win&version=#PKG_PREVIOUS_VER&channel=OFFICIAL",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response[0]",
+    "If ($Null -eq $Response) { Continue; } # Skip if empty response (no update)"
+  ],
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.download_url",
+    "ReleaseDate": "(Get-Date -Date $Response.created_date).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
