@@ -1,0 +1,39 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "JetBrains.TeamCity",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://data.services.jetbrains.com/products/releases?latest=true&type=release&code=TC",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": [
+    "$Response = $Response.TC",
+    "$UpdateCondition = $Response.build -gt $LastBuildNumber"
+  ],
+  "Update": {
+    "PackageVersion": "$Response.version + \" (build $($Response.build))\"",
+    "InstallerUrls": "($Response.downloads.windows.link -replace \"https://download.jetbrains.com\",\"https://download-cdn.jetbrains.com\")",
+    "ReleaseDate": "$Response.date",
+    "ProductCode": "'JetBrains TeamCity'",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotesUrl": "$Response.notesLink"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "LastBuildNumber": "99711",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "$Formula.AdditionalInfo.LastBuildNumber = $Response.build",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
