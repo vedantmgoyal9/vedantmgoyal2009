@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "NetEase.CloudMusic",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://interface.music.163.com/eapi/pc/upgrade/get",
+      "Method": "Post",
+      "Headers": {
+        "Cookie": "osver=Microsoft-Windows-10;appver=0.0"
+      },
+      "Body": "params=20AD5BCD8A21D010D72912FBE854AED808316493CA0F1AFE015054D5D9F452EE3C4A1059888BD80D600A56935FC1D89176529B0BCFC79DB464F6E9781441900B7EF8BF45613CBCECACFEA455F90502996B0C9ADAC46ED91A711E22F11A692251F37817494AE5D90E248DB3C34A803A4A",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data",
+  "Update": {
+    "PackageVersion": "$Response.packageVO.appver + '.' + $Response.packageVO.buildver",
+    "InstallerUrls": "$Response.packageVO.downloadUrl",
+    "Locales": [
+      {
+        "Name": "zh-cn",
+        "ReleaseNotes": "$Response.upgradeContent"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
