@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Google.Chrome.Canary",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://omahaproxy.appspot.com/all.json",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.versions | Where-Object { $_.os -eq 'win' -and $_.channel -eq 'canary' }",
+  "Update": {
+    "PackageVersion": "$Response.current_version",
+    "InstallerUrls": "@($x64_Uri, $x86_Uri)",
+    "ReleaseDate": "(Get-Date -Date $Response.current_reldate).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://dl.google.com/tag/s/appguid%3D%7B4EA16AC7-FD5A-47C3-875B-DBF4A2008C20%7D%26usagestats%3D1%26ap%3Dx64-canary-statsdef_1/update2/installers/ChromeSetup.exe",
+    "x86_Uri": "https://dl.google.com/tag/s/appguid%3D%7B4EA16AC7-FD5A-47C3-875B-DBF4A2008C20%7D%26usagestats%3D1%26ap%3D-statsdef_1/update2/installers/ChromeSetup.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
