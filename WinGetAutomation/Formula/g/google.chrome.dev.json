@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Google.Chrome.Dev",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://omahaproxy.appspot.com/all.json",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.versions | Where-Object { $_.os -eq 'win' -and $_.channel -eq 'dev' }",
+  "Update": {
+    "PackageVersion": "$Response.current_version",
+    "InstallerUrls": "@($x64_Uri, $x86_Uri)",
+    "ReleaseDate": "(Get-Date -Date $Response.current_reldate).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://dl.google.com/tag/s/dl/chrome/install/dev/googlechromedevstandaloneenterprise64.msi",
+    "x86_Uri": "https://dl.google.com/tag/s/dl/chrome/install/dev/googlechromedevstandaloneenterprise.msi",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
