@@ -14,13 +14,11 @@
   "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
   "Update": {
     "PackageVersion": "$Response.version",
-    "InstallerUrls": "\"https://fanyiapp.cdn.bcebos.com/tongchuan/update/$($Response.path)\"",
+    "InstallerUrls": "\"https://fanyiapp.cdn.bcebos.com/tongchuan/update/$($Response.path)|x64\"",
     "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')"
   },
   "AdditionalInfo": {
-    "ForceUpgrade": false,
-    "VersionRegex": "[0-9.]+",
-    "InstallerRegex": ".(exe|msi|msix|appx)(bundle){0,1}$"
+    "ForceUpgrade": false
   },
   "PostUpgradeScript": "",
   "Skip": {
