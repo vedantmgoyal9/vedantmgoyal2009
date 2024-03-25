@@ -1,0 +1,29 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "FengHe.Migi",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://migi.kirakuapp.com/admin/version/listNew",
+      "Method": "Post",
+      "Headers": {},
+      "Body": "platform=0&prodNo=1",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data[0].downloadUrl",
+  "Update": {
+    "PackageVersion": "([System.Uri]::UnescapeDataString($Response) | Select-String -Pattern $VersionRegex).Matches.Value",
+    "InstallerUrls": "$Response"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "[0-9.-]{2,}(?=\\.)",
+    "InstallerRegex": ".exe$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
