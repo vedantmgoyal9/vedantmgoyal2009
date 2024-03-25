@@ -1,0 +1,34 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "TominLab.WonderPen",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.tominlab.com/api/product/check-update?app=wonderpen",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$ReleaseInfo = (Invoke-RestMethod -Method Get -Uri 'https://www.tominlab.com/api/product/update-detail?app=wonderpen').data[0]",
+  "Update": {
+    "PackageVersion": "$Response.data.version",
+    "InstallerUrls": "$(Invoke-WebRequest -Uri 'https://www.tominlab.com/to/get-file/wonderpen?key=win-installer' -Method Head).BaseResponse.RequestMessage.RequestUri.OriginalString",
+    "ReleaseDate": "$ReleaseInfo.date",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$ReleaseInfo.desc.en"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
