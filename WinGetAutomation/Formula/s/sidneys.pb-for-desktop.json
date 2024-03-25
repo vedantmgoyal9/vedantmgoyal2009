@@ -17,7 +17,7 @@
   "PostResponseScript": "$UpdateCondition = $Response.prerelease -eq $PreRelease",
   "Update": {
     "PackageVersion": "$Response.tag_name.TrimStart('v')",
-    "InstallerUrls": "$Response.assets | ForEach-Object { if ($_.name -match '.msi$') { $_.browser_download_url } }",
+    "InstallerUrls": "$Response.assets | ForEach-Object { if ($_.name -match '.msi$') { $_.browser_download_url } } + '|x64'",
     "ReleaseDate": "(Get-Date -Date $Response.published_at).ToString('yyyy-MM-dd')"
   },
   "AdditionalInfo": {
