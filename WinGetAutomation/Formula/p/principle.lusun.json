@@ -1,0 +1,36 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Principle.Lusun",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://releases.lusun.com/latest.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "@($x64_Uri.Replace('#version', $Response.version), $x86_Uri.Replace('#version', $Response.version))",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.releaseNotes"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://releases.lusun.com/lusun-#version-win-x64.exe",
+    "x86_Uri": "https://releases.lusun.com/lusun-#version-win-ia32.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
