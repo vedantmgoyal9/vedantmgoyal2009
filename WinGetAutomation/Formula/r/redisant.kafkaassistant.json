@@ -1,0 +1,33 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Redisant.KafkaAssistant",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.redisant.com/ka/activate/checkUpdate",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.enDownloadUrl",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.enDescribes[0..($Response.enDescribes.Length - 2)] -replace '^','- ' -join \"`n\""
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
