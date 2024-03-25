@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Baidu.BaiduSIMeeting",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://fanyiapp.cdn.bcebos.com/tongchuan/update/latest.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "\"https://fanyiapp.cdn.bcebos.com/tongchuan/update/$($Response.path)|x64\"",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
