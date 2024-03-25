@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Lenovo.LeAppStore",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://pc-store.lenovomm.cn/upgrade/indep/upgrade_check",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data",
+  "Update": {
+    "PackageVersion": "$Response.versionName",
+    "InstallerUrls": "$UriPrefix + ($Response.downloadUrl -replace $FilePathRegex, $Null)",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.note"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "UriPrefix": "https://pc-shop-upgrade.lenovomm.cn",
+    "FilePathRegex": ".*filekey=",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
