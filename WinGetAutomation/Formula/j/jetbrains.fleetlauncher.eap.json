@@ -1,0 +1,34 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "JetBrains.FleetLauncher.EAP",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://data.services.jetbrains.com/products/releases?latest=true&type=eap&code=FLL",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.FLL",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "($Response.downloads.windows_x64.link -replace \"https://download.jetbrains.com\",\"https://download-cdn.jetbrains.com\")",
+    "ReleaseDate": "$Response.date",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotesUrl": "$Response.notesLink"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
