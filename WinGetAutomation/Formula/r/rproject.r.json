@@ -1,0 +1,28 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "RProject.R",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://cran.r-project.org/src/base/VERSION-INFO.dcf",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.Replace(':','=') | ConvertFrom-StringData",
+  "Update": {
+    "PackageVersion": "$Response.Release",
+    "InstallerUrls": "\"https://cloud.r-project.org/bin/windows/base/old/$($Response.Release)/R-$($Response.Release)-win.exe\"",
+    "ReleaseDate": "$Response.Date"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
