@@ -1,0 +1,33 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Redisant.LittleTips",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://www.redisant.com/ltip/activate/checkUpdate",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$Response.enDownloadUrl.Split('|').Where({ $_ -match '.(exe|msi|msix|appx)(bundle){0,1}$' })",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.enDescribes -replace '^','- ' -join \"`n\""
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
