@@ -1,0 +1,27 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Plex.Plexamp",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://plexamp.plex.tv/plexamp.plex.tv/desktop/latest.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "\"https://plexamp.plex.tv/plexamp.plex.tv/desktop/$([System.Uri]::EscapeUriString($Response.path))\""
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
