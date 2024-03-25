@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Wondershare.PDFelement.CN",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://cbs.wondershare.com/go.php?m=upgrade_info&pid=5387&version=8.0.0.0",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = Select-Xml -Content ([System.IO.StreamReader]::new($Response.RawContentStream).ReadToEnd()) -XPath '/Respone/WhatNews/Item' | Select-Object -First 1 -ExpandProperty Node",
+  "Update": {
+    "PackageVersion": "$Response.Version",
+    "InstallerUrls": "@($x64InstUri.Replace('#version',$Response.Version), $x86InstUri.Replace('#version',$Response.Version))",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.Text.'#cdata-section'"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "x64InstUri": "https://cc-download.wondershare.cc/cbs_down/pdfelement_64bit_#version_full5387.exe",
+    "x86InstUri": "https://cc-download.wondershare.cc/cbs_down/pdfelement_#version_full5387.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
