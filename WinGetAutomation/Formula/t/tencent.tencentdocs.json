@@ -1,0 +1,40 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Tencent.TencentDocs",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://docs.qq.com/rainbow/config.v2.ConfigService/PullConfigReq",
+      "Method": "Post",
+      "Headers": {
+        "Content-Type": "application/json"
+      },
+      "Body": "{\"pull_item\":{\"app_id\":\"e4099bf9-f579-4233-9a15-6625a48bcb56\",\"group\":\"Prod.Common.Update\"},\"client_infos\":[{\"client_identified_name\":\"uin\",\"client_identified_value\":\"99\"}]}",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.config.items.key_values.value | ConvertFrom-Json",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "@($x86_Uri.Replace('#version', $Response.version), $x64_Uri.Replace('#version', $Response.version), $Arm64_Uri.Replace('#version', $Response.version))",
+    "ReleaseDate": "($Response.update_info | Select-String -Pattern $ReleaseDateRegex).Matches.Value",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.update_info"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "ReleaseDateRegex": "(?<=\\s)[0-9-]+",
+    "x86_Uri": "https://dldir1.qq.com/weiyun/tencentdocs/electron-update/release/#version/TencentDocs#version.ia32.30002.exe",
+    "x64_Uri": "https://dldir1.qq.com/weiyun/tencentdocs/electron-update/release/#version/TencentDocs#version.x64.30002.exe",
+    "Arm64_Uri": "https://dldir1.qq.com/weiyun/tencentdocs/electron-update/release/#version/TencentDocs#version.arm64.30002.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
