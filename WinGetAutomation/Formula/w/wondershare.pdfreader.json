@@ -1,0 +1,35 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Wondershare.PDFReader",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://cbs.wondershare.com/go.php?m=upgrade_info&pid=13142&version=1.0.0.0",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.Respone.WhatNews.FirstChild",
+  "Update": {
+    "PackageVersion": "$Response.Version",
+    "InstallerUrls": "@($x64InstUri.Replace('#version',$Response.Version), $x86InstUri.Replace('#version',$Response.Version))",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.Text.'#cdata-section'"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "x64InstUri": "https://download.wondershare.com/cbs_down/pdfreader_64bit_#version_full13142.exe",
+    "x86InstUri": "https://download.wondershare.com/cbs_down/pdfreader_#version_full13142.exe",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
