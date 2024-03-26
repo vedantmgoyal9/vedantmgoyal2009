@@ -1,0 +1,34 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "PortSwigger.BurpSuite.Professional",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://portswigger.net/Burp/Releases/CheckForUpdates?product=community&channel=Stable&version=0",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.updates[0]",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "$InstUri.Replace('#version', $Response.version)",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.description"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "InstUri": "https://portswigger-cdn.net/burp/releases/download?product=pro&version=#version&type=WindowsX64",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
