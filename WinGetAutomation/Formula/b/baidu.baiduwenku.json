@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "Baidu.BaiduWenku",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://edu-wenku.bdimg.com/v1/pcclient/upgrade/latest.yml",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response | ConvertFrom-Yaml",
+  "Update": {
+    "PackageVersion": "$Response.version",
+    "InstallerUrls": "\"https://edu-wenku.bdimg.com/v1/pcclient/upgrade/$([System.Uri]::EscapeDataString($Response.path))\"",
+    "ReleaseDate": "(Get-Date -Date $Response.releaseDate).ToString('yyyy-MM-dd')"
+  },
+  "AdditionalInfo": {
+    "ForceUpgrade": false,
+    "VersionRegex": "[0-9.]+",
+    "InstallerRegex": ".exe$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
