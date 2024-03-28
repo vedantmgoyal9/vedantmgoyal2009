@@ -1,0 +1,36 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "EdrawSoft.MindMaster",
+  "Source": [
+    {
+      "InvokeType": "RestMethod",
+      "Uri": "https://pc-api.wondershare.cc/v2/product/check-upgrade?pid=5375&client_sign=%7B%7D&version=8.0.0&platform=win_x86",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response = $Response.data",
+  "Update": {
+    "InstallerUrls": "$InstUri.Replace('#version', $Response.version)",
+    "PackageVersion": "(.\\winget-pkgs-automation.exe gii --json \"$($Update.InstallerUrls)\" | ConvertFrom-Json).PackageVersion",
+    "Locales": [
+      {
+        "Name": "en-us",
+        "ReleaseNotes": "$Response.whats_new_content"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "InstUri": "https://cc-download.edrawsoft.cn/cbs_down/mindmaster_cn_#version_full5375.exe",
+    "ForceUpgrade": false,
+    "VersionRegex": "[0-9.]+",
+    "InstallerRegex": ".(exe|msi|msix|appx)(bundle){0,1}$"
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
