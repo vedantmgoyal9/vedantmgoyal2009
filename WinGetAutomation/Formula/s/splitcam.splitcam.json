@@ -1,0 +1,44 @@
+{
+  "$schema": "https://github.com/vedantmgoyal9/vedantmgoyal9/raw/main/WinGetAutomation/schema.json",
+  "PackageIdentifier": "SplitCam.SplitCam",
+  "Source": [
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://splitcam.com/download",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    },
+    {
+      "InvokeType": "WebRequest",
+      "Uri": "https://splitcam.com/win-download/update/history.txt",
+      "Method": "Get",
+      "Headers": {},
+      "Body": "",
+      "UserAgent": ""
+    }
+  ],
+  "PostResponseScript": "$Response2 = $Response2.Content -split '\\n'",
+  "Update": {
+    "PackageVersion": "($Response.Content | Select-String -Pattern '(?<=SplitCam v)[\\d.]+(?=\\s)').Matches.Value",
+    "InstallerUrls": "@($x64_Uri.Replace('#version', $UpdateInfo.PackageVersion), $x86_Uri.Replace('#version', $UpdateInfo.PackageVersion))",
+    "ReleaseDate": "(Get-Date -Date $Response2[2]).ToString('yyyy-MM-dd')",
+    "Locales": [
+      {
+        "Name": "en-US",
+        "ReleaseNotesUrl": "https://splitcam.com/splitcam-changes-win"
+      }
+    ]
+  },
+  "AdditionalInfo": {
+    "x64_Uri": "https://splitcam.com/win-download/update/#version_x64.msi",
+    "x86_Uri": "https://splitcam.com/win-download/update/#version.msi",
+    "ForceUpgrade": false
+  },
+  "PostUpgradeScript": "",
+  "Skip": {
+    "Skip?": false,
+    "Reason": null
+  }
+}
