@@ -25,11 +25,11 @@
   },
   "homepage": "https://github.com/vedantmgoyal9/vedantmgoyal9#readme",
   "dependencies": {
-    "@commitlint/config-conventional": "^18.6.2",
-    "@commitlint/format": "^18.6.1",
-    "@commitlint/lint": "^18.6.1",
+    "@commitlint/config-conventional": "^19.1.0",
+    "@commitlint/format": "^19.0.3",
+    "@commitlint/lint": "^19.1.0",
     "playwright": "^1.42.1",
-    "probot": "^13.1.0"
+    "probot": "^13.1.2"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
